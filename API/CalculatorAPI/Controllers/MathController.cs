@@ -7,6 +7,9 @@ using System.Web.Http;
 
 namespace CalculatorAPI.Controllers
 {
+    /// <summary>
+    /// An API for useful mathematical operations
+    /// </summary>
     public class MathController : ApiController
     {
         /// <summary>
@@ -16,7 +19,7 @@ namespace CalculatorAPI.Controllers
         /// <param name="value2"></param>
         /// <returns></returns>
         [HttpGet]
-        public int Add(int value1, int value2)
+        public double Add(double value1, double value2)
         {
             return value1 + value2;
         }
@@ -28,7 +31,7 @@ namespace CalculatorAPI.Controllers
         /// <param name="value2"></param>
         /// <returns></returns>
         [HttpGet]
-        public int Subtract(int value1, int value2)
+        public double Subtract(double value1, double value2)
         {
             return value1 - value2;
         }
@@ -40,7 +43,7 @@ namespace CalculatorAPI.Controllers
         /// <param name="value2"></param>
         /// <returns></returns>
         [HttpGet]
-        public int Multiply(int value1, int value2)
+        public double Multiply(double value1, double value2)
         {
             return value1 * value2;
         }
@@ -52,9 +55,22 @@ namespace CalculatorAPI.Controllers
         /// <param name="value2"></param>
         /// <returns></returns>
         [HttpGet]
-        public int Divide(int value1, int value2)
+        public double Divide(double value1, double value2)
         {
             return value1 / value2;
+        }
+
+
+        /// <summary>
+        /// Raises value 1 to the power of value 2
+        /// </summary>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public double Power(double value1, double value2)
+        {
+            return Math.Pow(value1, value2);
         }
     }
 }
