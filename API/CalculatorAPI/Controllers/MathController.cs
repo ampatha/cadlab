@@ -7,6 +7,9 @@ using System.Web.Http;
 
 namespace CalculatorAPI.Controllers
 {
+    /// <summary>
+    /// An API for useful mathematical operations
+    /// </summary>
     public class MathController : ApiController
     {
         /// <summary>
