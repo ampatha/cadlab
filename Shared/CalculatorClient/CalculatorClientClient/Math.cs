@@ -26,9 +26,9 @@ namespace CalculatorClient
         {
             this._client = client;
         }
-        
+
         private CalculatorClientClient _client;
-        
+
         /// <summary>
         /// Gets a reference to the CalculatorClient.CalculatorClientClient.
         /// </summary>
@@ -36,7 +36,7 @@ namespace CalculatorClient
         {
             get { return this._client; }
         }
-        
+
         /// <summary>
         /// Adds value 1 to value 2
         /// </summary>
@@ -62,7 +62,7 @@ namespace CalculatorClient
             {
                 throw new ArgumentNullException("ocpApimSubscriptionKey");
             }
-            
+
             // Tracing
             bool shouldTrace = ServiceClientTracing.IsEnabled;
             string invocationId = null;
@@ -76,7 +76,7 @@ namespace CalculatorClient
                 tracingParameters.Add("ocpApimSubscriptionKey", ocpApimSubscriptionKey);
                 ServiceClientTracing.Enter(invocationId, this, "AddAsync", tracingParameters);
             }
-            
+
             // Construct URL
             string url = "";
             url = url + "/api/Math/Add";
@@ -103,22 +103,22 @@ namespace CalculatorClient
             }
             url = baseUrl + "/" + url;
             url = url.Replace(" ", "%20");
-            
+
             // Create HTTP transport objects
             HttpRequestMessage httpRequest = new HttpRequestMessage();
             httpRequest.Method = HttpMethod.Get;
             httpRequest.RequestUri = new Uri(url);
-            
+
             // Set Headers
             httpRequest.Headers.Add("Ocp-Apim-Subscription-Key", ocpApimSubscriptionKey);
-            
+
             // Set Credentials
             if (this.Client.Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 await this.Client.Credentials.ProcessHttpRequestAsync(httpRequest, cancellationToken).ConfigureAwait(false);
             }
-            
+
             // Send Request
             if (shouldTrace)
             {
@@ -135,9 +135,9 @@ namespace CalculatorClient
             string responseContent = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
             if (statusCode != HttpStatusCode.OK)
             {
-                HttpOperationException<object> ex = new HttpOperationException<object>();
-                ex.Request = httpRequest;
-                ex.Response = httpResponse;
+                HttpOperationException ex = new HttpOperationException();
+                ex.Request = new HttpRequestMessageWrapper(httpRequest, httpRequest.Content.AsString());
+                ex.Response = new HttpResponseMessageWrapper(httpResponse, httpResponse.Content.AsString()); ;
                 ex.Body = null;
                 if (shouldTrace)
                 {
@@ -145,12 +145,12 @@ namespace CalculatorClient
                 }
                 throw ex;
             }
-            
+
             // Create Result
             HttpOperationResponse<double> result = new HttpOperationResponse<double>();
             result.Request = httpRequest;
             result.Response = httpResponse;
-            
+
             // Deserialize Response
             if (statusCode == HttpStatusCode.OK)
             {
@@ -166,14 +166,14 @@ namespace CalculatorClient
                 }
                 result.Body = resultModel;
             }
-            
+
             if (shouldTrace)
             {
                 ServiceClientTracing.Exit(invocationId, result);
             }
             return result;
         }
-        
+
         /// <summary>
         /// Divides value 1 by value 2
         /// </summary>
@@ -199,7 +199,7 @@ namespace CalculatorClient
             {
                 throw new ArgumentNullException("ocpApimSubscriptionKey");
             }
-            
+
             // Tracing
             bool shouldTrace = ServiceClientTracing.IsEnabled;
             string invocationId = null;
@@ -213,7 +213,7 @@ namespace CalculatorClient
                 tracingParameters.Add("ocpApimSubscriptionKey", ocpApimSubscriptionKey);
                 ServiceClientTracing.Enter(invocationId, this, "DivideAsync", tracingParameters);
             }
-            
+
             // Construct URL
             string url = "";
             url = url + "/api/Math/Divide";
@@ -240,22 +240,22 @@ namespace CalculatorClient
             }
             url = baseUrl + "/" + url;
             url = url.Replace(" ", "%20");
-            
+
             // Create HTTP transport objects
             HttpRequestMessage httpRequest = new HttpRequestMessage();
             httpRequest.Method = HttpMethod.Get;
             httpRequest.RequestUri = new Uri(url);
-            
+
             // Set Headers
             httpRequest.Headers.Add("Ocp-Apim-Subscription-Key", ocpApimSubscriptionKey);
-            
+
             // Set Credentials
             if (this.Client.Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 await this.Client.Credentials.ProcessHttpRequestAsync(httpRequest, cancellationToken).ConfigureAwait(false);
             }
-            
+
             // Send Request
             if (shouldTrace)
             {
@@ -272,9 +272,9 @@ namespace CalculatorClient
             string responseContent = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
             if (statusCode != HttpStatusCode.OK)
             {
-                HttpOperationException<object> ex = new HttpOperationException<object>();
-                ex.Request = httpRequest;
-                ex.Response = httpResponse;
+                HttpOperationException ex = new HttpOperationException();
+                ex.Request = new HttpRequestMessageWrapper(httpRequest, httpRequest.Content.AsString());
+                ex.Response = new HttpResponseMessageWrapper(httpResponse, httpResponse.Content.AsString()); ;
                 ex.Body = null;
                 if (shouldTrace)
                 {
@@ -282,12 +282,12 @@ namespace CalculatorClient
                 }
                 throw ex;
             }
-            
+
             // Create Result
             HttpOperationResponse<double> result = new HttpOperationResponse<double>();
             result.Request = httpRequest;
             result.Response = httpResponse;
-            
+
             // Deserialize Response
             if (statusCode == HttpStatusCode.OK)
             {
@@ -303,14 +303,14 @@ namespace CalculatorClient
                 }
                 result.Body = resultModel;
             }
-            
+
             if (shouldTrace)
             {
                 ServiceClientTracing.Exit(invocationId, result);
             }
             return result;
         }
-        
+
         /// <summary>
         /// Multiplies value 1 and value 2
         /// </summary>
@@ -336,7 +336,7 @@ namespace CalculatorClient
             {
                 throw new ArgumentNullException("ocpApimSubscriptionKey");
             }
-            
+
             // Tracing
             bool shouldTrace = ServiceClientTracing.IsEnabled;
             string invocationId = null;
@@ -350,7 +350,7 @@ namespace CalculatorClient
                 tracingParameters.Add("ocpApimSubscriptionKey", ocpApimSubscriptionKey);
                 ServiceClientTracing.Enter(invocationId, this, "MultiplyAsync", tracingParameters);
             }
-            
+
             // Construct URL
             string url = "";
             url = url + "/api/Math/Multiply";
@@ -377,22 +377,22 @@ namespace CalculatorClient
             }
             url = baseUrl + "/" + url;
             url = url.Replace(" ", "%20");
-            
+
             // Create HTTP transport objects
             HttpRequestMessage httpRequest = new HttpRequestMessage();
             httpRequest.Method = HttpMethod.Get;
             httpRequest.RequestUri = new Uri(url);
-            
+
             // Set Headers
             httpRequest.Headers.Add("Ocp-Apim-Subscription-Key", ocpApimSubscriptionKey);
-            
+
             // Set Credentials
             if (this.Client.Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 await this.Client.Credentials.ProcessHttpRequestAsync(httpRequest, cancellationToken).ConfigureAwait(false);
             }
-            
+
             // Send Request
             if (shouldTrace)
             {
@@ -409,9 +409,9 @@ namespace CalculatorClient
             string responseContent = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
             if (statusCode != HttpStatusCode.OK)
             {
-                HttpOperationException<object> ex = new HttpOperationException<object>();
-                ex.Request = httpRequest;
-                ex.Response = httpResponse;
+                HttpOperationException ex = new HttpOperationException();
+                ex.Request = new HttpRequestMessageWrapper(httpRequest, httpRequest.Content.AsString());
+                ex.Response = new HttpResponseMessageWrapper(httpResponse, httpResponse.Content.AsString()); ;
                 ex.Body = null;
                 if (shouldTrace)
                 {
@@ -419,12 +419,12 @@ namespace CalculatorClient
                 }
                 throw ex;
             }
-            
+
             // Create Result
             HttpOperationResponse<double> result = new HttpOperationResponse<double>();
             result.Request = httpRequest;
             result.Response = httpResponse;
-            
+
             // Deserialize Response
             if (statusCode == HttpStatusCode.OK)
             {
@@ -440,14 +440,14 @@ namespace CalculatorClient
                 }
                 result.Body = resultModel;
             }
-            
+
             if (shouldTrace)
             {
                 ServiceClientTracing.Exit(invocationId, result);
             }
             return result;
         }
-        
+
         /// <summary>
         /// Raises value 1 to the power of value 2
         /// </summary>
@@ -473,7 +473,7 @@ namespace CalculatorClient
             {
                 throw new ArgumentNullException("ocpApimSubscriptionKey");
             }
-            
+
             // Tracing
             bool shouldTrace = ServiceClientTracing.IsEnabled;
             string invocationId = null;
@@ -487,7 +487,7 @@ namespace CalculatorClient
                 tracingParameters.Add("ocpApimSubscriptionKey", ocpApimSubscriptionKey);
                 ServiceClientTracing.Enter(invocationId, this, "PowerAsync", tracingParameters);
             }
-            
+
             // Construct URL
             string url = "";
             url = url + "/api/Math/Power";
@@ -514,22 +514,22 @@ namespace CalculatorClient
             }
             url = baseUrl + "/" + url;
             url = url.Replace(" ", "%20");
-            
+
             // Create HTTP transport objects
             HttpRequestMessage httpRequest = new HttpRequestMessage();
             httpRequest.Method = HttpMethod.Get;
             httpRequest.RequestUri = new Uri(url);
-            
+
             // Set Headers
             httpRequest.Headers.Add("Ocp-Apim-Subscription-Key", ocpApimSubscriptionKey);
-            
+
             // Set Credentials
             if (this.Client.Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 await this.Client.Credentials.ProcessHttpRequestAsync(httpRequest, cancellationToken).ConfigureAwait(false);
             }
-            
+
             // Send Request
             if (shouldTrace)
             {
@@ -546,9 +546,9 @@ namespace CalculatorClient
             string responseContent = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
             if (statusCode != HttpStatusCode.OK)
             {
-                HttpOperationException<object> ex = new HttpOperationException<object>();
-                ex.Request = httpRequest;
-                ex.Response = httpResponse;
+                HttpOperationException ex = new HttpOperationException();
+                ex.Request = new HttpRequestMessageWrapper(httpRequest, httpRequest.Content.AsString());
+                ex.Response = new HttpResponseMessageWrapper(httpResponse, httpResponse.Content.AsString()); ;
                 ex.Body = null;
                 if (shouldTrace)
                 {
@@ -556,12 +556,12 @@ namespace CalculatorClient
                 }
                 throw ex;
             }
-            
+
             // Create Result
             HttpOperationResponse<double> result = new HttpOperationResponse<double>();
             result.Request = httpRequest;
             result.Response = httpResponse;
-            
+
             // Deserialize Response
             if (statusCode == HttpStatusCode.OK)
             {
@@ -577,14 +577,14 @@ namespace CalculatorClient
                 }
                 result.Body = resultModel;
             }
-            
+
             if (shouldTrace)
             {
                 ServiceClientTracing.Exit(invocationId, result);
             }
             return result;
         }
-        
+
         /// <summary>
         /// Subtracts value 2 from value 1
         /// </summary>
@@ -610,7 +610,7 @@ namespace CalculatorClient
             {
                 throw new ArgumentNullException("ocpApimSubscriptionKey");
             }
-            
+
             // Tracing
             bool shouldTrace = ServiceClientTracing.IsEnabled;
             string invocationId = null;
@@ -624,7 +624,7 @@ namespace CalculatorClient
                 tracingParameters.Add("ocpApimSubscriptionKey", ocpApimSubscriptionKey);
                 ServiceClientTracing.Enter(invocationId, this, "SubtractAsync", tracingParameters);
             }
-            
+
             // Construct URL
             string url = "";
             url = url + "/api/Math/Subtract";
@@ -651,22 +651,22 @@ namespace CalculatorClient
             }
             url = baseUrl + "/" + url;
             url = url.Replace(" ", "%20");
-            
+
             // Create HTTP transport objects
             HttpRequestMessage httpRequest = new HttpRequestMessage();
             httpRequest.Method = HttpMethod.Get;
             httpRequest.RequestUri = new Uri(url);
-            
+
             // Set Headers
             httpRequest.Headers.Add("Ocp-Apim-Subscription-Key", ocpApimSubscriptionKey);
-            
+
             // Set Credentials
             if (this.Client.Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 await this.Client.Credentials.ProcessHttpRequestAsync(httpRequest, cancellationToken).ConfigureAwait(false);
             }
-            
+
             // Send Request
             if (shouldTrace)
             {
@@ -683,9 +683,9 @@ namespace CalculatorClient
             string responseContent = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
             if (statusCode != HttpStatusCode.OK)
             {
-                HttpOperationException<object> ex = new HttpOperationException<object>();
-                ex.Request = httpRequest;
-                ex.Response = httpResponse;
+                HttpOperationException ex = new HttpOperationException();
+                ex.Request = new HttpRequestMessageWrapper(httpRequest, httpRequest.Content.AsString());
+                ex.Response = new HttpResponseMessageWrapper(httpResponse, httpResponse.Content.AsString()); ;
                 ex.Body = null;
                 if (shouldTrace)
                 {
@@ -693,12 +693,12 @@ namespace CalculatorClient
                 }
                 throw ex;
             }
-            
+
             // Create Result
             HttpOperationResponse<double> result = new HttpOperationResponse<double>();
             result.Request = httpRequest;
             result.Response = httpResponse;
-            
+
             // Deserialize Response
             if (statusCode == HttpStatusCode.OK)
             {
@@ -714,7 +714,7 @@ namespace CalculatorClient
                 }
                 result.Body = resultModel;
             }
-            
+
             if (shouldTrace)
             {
                 ServiceClientTracing.Exit(invocationId, result);
