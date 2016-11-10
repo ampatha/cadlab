@@ -243,3 +243,5 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/API/CalculatorAPI/Properties/PublishProfiles/calccadlab - Web Deploy.pubxml
+/API/CalculatorAPI/Properties/PublishProfiles
