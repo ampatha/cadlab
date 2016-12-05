@@ -1,5 +1,4 @@
-﻿using CalculatorAPI.App_Start;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
@@ -28,9 +27,6 @@ namespace CalculatorAPI
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
-
-            // Track Exceptions with Application Insights
-            config.Services.Add(typeof(IExceptionLogger), new AiExceptionLogger());
         }
     }
 }
