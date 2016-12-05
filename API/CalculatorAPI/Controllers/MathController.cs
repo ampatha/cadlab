@@ -57,6 +57,9 @@ namespace CalculatorAPI.Controllers
         [HttpGet]
         public double Divide(double value1, double value2)
         {
+            if(value2==0)
+                System.Diagnostics.Trace.TraceWarning("Attempting to divide by zero."); // will be traced in Application Insights
+
             return value1 / value2;
         }
 
@@ -70,6 +73,7 @@ namespace CalculatorAPI.Controllers
         [HttpGet]
         public double Power(double value1, double value2)
         {
+            throw new Exception("This is some sloppy code here that throws exceptions."); // will be traced in Application Insights
             return Math.Pow(value1, value2);
         }
     }
