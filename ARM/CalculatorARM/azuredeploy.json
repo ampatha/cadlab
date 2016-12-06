@@ -1,0 +1,285 @@
+﻿{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "CalculatorAppServicePlanName": {
+            "type": "string",
+            "minLength": 1
+        },
+        "CalculatorAppServicePlanSKU": {
+            "type": "string",
+            "allowedValues": [
+                "Free",
+                "Shared",
+                "Basic",
+                "Standard"
+            ],
+            "defaultValue": "Free"
+        },
+        "CalculatorAppServicePlanWorkerSize": {
+            "type": "string",
+            "allowedValues": [
+                "0",
+                "1",
+                "2"
+            ],
+            "defaultValue": "0"
+        }
+    },
+    "variables": {
+        "CalculatorAppName": "[concat('CalculatorApp', uniqueString(resourceGroup().id))]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('CalculatorAppServicePlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2014-06-01",
+            "dependsOn": [ ],
+            "tags": {
+                "displayName": "CalculatorAppServicePlan"
+            },
+            "properties": {
+                "name": "[parameters('CalculatorAppServicePlanName')]",
+                "sku": "[parameters('CalculatorAppServicePlanSKU')]",
+                "workerSize": "[parameters('CalculatorAppServicePlanWorkerSize')]",
+                "numberOfWorkers": 1
+            }
+        },
+        {
+            "name": "[variables('CalculatorAppName')]",
+            "type": "Microsoft.Web/sites",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2015-08-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('CalculatorAppServicePlanName'))]"
+            ],
+            "tags": {
+                "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', parameters('CalculatorAppServicePlanName')))]": "Resource",
+                "displayName": "CalculatorApp"
+            },
+            "properties": {
+                "name": "[variables('CalculatorAppName')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('CalculatorAppServicePlanName'))]"
+            }
+        },
+        {
+            "name": "[concat(parameters('CalculatorAppServicePlanName'), '-', resourceGroup().name)]",
+            "type": "Microsoft.Insights/autoscalesettings",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2014-04-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('CalculatorAppServicePlanName'))]"
+            ],
+            "tags": {
+                "[concat('hidden-link:', resourceId('Microsoft.Web/serverfarms', parameters('CalculatorAppServicePlanName')))]": "Resource",
+                "displayName": "CalculatorAppInsights AutoScale"
+            },
+            "properties": {
+                "name": "[concat(parameters('CalculatorAppServicePlanName'), '-', resourceGroup().name)]",
+                "profiles": [
+                    {
+                        "name": "Default",
+                        "capacity": {
+                            "minimum": 1,
+                            "maximum": 2,
+                            "default": 1
+                        },
+                        "rules": [
+                            {
+                                "metricTrigger": {
+                                    "metricName": "CpuPercentage",
+                                    "metricResourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('CalculatorAppServicePlanName'))]",
+                                    "timeGrain": "PT1M",
+                                    "statistic": "Average",
+                                    "timeWindow": "PT10M",
+                                    "timeAggregation": "Average",
+                                    "operator": "GreaterThan",
+                                    "threshold": 80
+                                },
+                                "scaleAction": {
+                                    "direction": "Increase",
+                                    "type": "ChangeCount",
+                                    "value": 1,
+                                    "cooldown": "PT10M"
+                                }
+                            },
+                            {
+                                "metricTrigger": {
+                                    "metricName": "CpuPercentage",
+                                    "metricResourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('CalculatorAppServicePlanName'))]",
+                                    "timeGrain": "PT1M",
+                                    "statistic": "Average",
+                                    "timeWindow": "PT1H",
+                                    "timeAggregation": "Average",
+                                    "operator": "LessThan",
+                                    "threshold": 60
+                                },
+                                "scaleAction": {
+                                    "direction": "Decrease",
+                                    "type": "ChangeCount",
+                                    "value": 1,
+                                    "cooldown": "PT1H"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "enabled": false,
+                "targetResourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('CalculatorAppServicePlanName'))]"
+            }
+        },
+        {
+            "name": "[concat('CPUHigh ', parameters('CalculatorAppServicePlanName'))]",
+            "type": "Microsoft.Insights/alertrules",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2014-04-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('CalculatorAppServicePlanName'))]"
+            ],
+            "tags": {
+                "[concat('hidden-link:', resourceId('Microsoft.Web/serverfarms', parameters('CalculatorAppServicePlanName')))]": "Resource",
+                "displayName": "CPUHigh CalculatorAppInsights"
+            },
+            "properties": {
+                "name": "[concat('CPUHigh ', parameters('CalculatorAppServicePlanName'))]",
+                "description": "[concat('The average CPU is high across all the instances of ', parameters('CalculatorAppServicePlanName'))]",
+                "isEnabled": false,
+                "condition": {
+                    "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
+                    "dataSource": {
+                        "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
+                        "resourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('CalculatorAppServicePlanName'))]",
+                        "metricName": "CpuPercentage"
+                    },
+                    "operator": "GreaterThan",
+                    "threshold": 90,
+                    "windowSize": "PT15M"
+                },
+                "action": {
+                    "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
+                    "sendToServiceOwners": true,
+                    "customEmails": [ ]
+                }
+            }
+        },
+        {
+            "name": "[concat('LongHttpQueue ', parameters('CalculatorAppServicePlanName'))]",
+            "type": "Microsoft.Insights/alertrules",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2014-04-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('CalculatorAppServicePlanName'))]"
+            ],
+            "tags": {
+                "[concat('hidden-link:', resourceId('Microsoft.Web/serverfarms', parameters('CalculatorAppServicePlanName')))]": "Resource",
+                "displayName": "LongHttpQueue CalculatorAppInsights"
+            },
+            "properties": {
+                "name": "[concat('LongHttpQueue ', parameters('CalculatorAppServicePlanName'))]",
+                "description": "[concat('The HTTP queue for the instances of ', parameters('CalculatorAppServicePlanName'), ' has a large number of pending requests.')]",
+                "isEnabled": false,
+                "condition": {
+                    "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
+                    "dataSource": {
+                        "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
+                        "resourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('CalculatorAppServicePlanName'))]",
+                        "metricName": "HttpQueueLength"
+                    },
+                    "operator": "GreaterThan",
+                    "threshold": 100,
+                    "windowSize": "PT5M"
+                },
+                "action": {
+                    "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
+                    "sendToServiceOwners": true,
+                    "customEmails": [ ]
+                }
+            }
+        },
+        {
+            "name": "[concat('ServerErrors ', 'CalculatorAppInsights')]",
+            "type": "Microsoft.Insights/alertrules",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2014-04-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', variables('CalculatorAppName'))]"
+            ],
+            "tags": {
+                "[concat('hidden-link:', resourceId('Microsoft.Web/sites', variables('CalculatorAppName')))]": "Resource",
+                "displayName": "ServerErrors CalculatorAppInsights"
+            },
+            "properties": {
+                "name": "[concat('ServerErrors ', variables('CalculatorAppName'))]",
+                "description": "[concat(variables('CalculatorAppName'), ' has some server errors, status code 5xx.')]",
+                "isEnabled": false,
+                "condition": {
+                    "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
+                    "dataSource": {
+                        "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
+                        "resourceUri": "[resourceId('Microsoft.Web/sites', variables('CalculatorAppName'))]",
+                        "metricName": "Http5xx"
+                    },
+                    "operator": "GreaterThan",
+                    "threshold": 0,
+                    "windowSize": "PT5M"
+                },
+                "action": {
+                    "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
+                    "sendToServiceOwners": true,
+                    "customEmails": [ ]
+                }
+            }
+        },
+        {
+            "name": "[concat('ForbiddenRequests ', 'CalculatorAppInsights')]",
+            "type": "Microsoft.Insights/alertrules",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2014-04-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', variables('CalculatorAppName'))]"
+            ],
+            "tags": {
+                "displayName": "ForbiddenRequests CalculatorAppInsights"
+            },
+            "properties": {
+                "name": "[concat('ForbiddenRequests ', variables('CalculatorAppName'))]",
+                "description": "[concat(variables('CalculatorAppName'), ' has some requests that are forbidden, status code 403.')]",
+                "isEnabled": false,
+                "condition": {
+                    "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
+                    "dataSource": {
+                        "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
+                        "resourceUri": "[resourceId('Microsoft.Web/sites', variables('CalculatorAppName'))]",
+                        "metricName": "Http403"
+                    },
+                    "operator": "GreaterThan",
+                    "threshold": 0,
+                    "windowSize": "PT5M"
+                },
+                "action": {
+                    "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
+                    "sendToServiceOwners": true,
+                    "customEmails": [ ]
+                }
+            }
+        },
+        {
+            "name": "CalculatorAppInsights",
+            "type": "Microsoft.Insights/components",
+            "location": "East US",
+            "apiVersion": "2014-04-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', variables('CalculatorAppName'))]"
+            ],
+            "tags": {
+                "displayName": "Component CalculatorAppInsights"
+            },
+            "properties": {
+                "applicationId": "[resourceId('Microsoft.Web/sites', variables('CalculatorAppName'))]"
+            }
+        }
+    ],
+    "outputs": {
+    }
+}
