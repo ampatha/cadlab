@@ -32,5 +32,12 @@
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\API\CalculatorAPI\CalculatorAPI.csproj">
+      <Targets>Build;Package</Targets>
+      <AdditionalProperties>PackageLocation=..\..\ARM\CalculatorARM\$(ProjectReferencesOutputPath)\CalculatorAPI\package.zip</AdditionalProperties>
+      <IncludeFilePath>$(ProjectReferencesOutputPath)\CalculatorAPI\package.zip</IncludeFilePath>
+    </ProjectReference>
+  </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>
